@@ -31,13 +31,13 @@ client.connect((err) =>
 
 app.get('/', (req,res) =>
 {
-    res.send('users for users, games for games');
+    res.send('files for users, games for games');
 })
 
-app.get('/users',(req,resApp) =>
+app.get('/files',(req,resApp) =>
 {
     //client.connect();
-    client.query("SELECT * from users;", (err,res) =>
+    client.query("SELECT * from files;", (err,res) =>
     {
         if(err) throw err;
         for(let row of res.rows)
