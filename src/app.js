@@ -62,6 +62,21 @@ app.get('/files',(req,resApp) =>
 })
 
 */
+
+app.get('/games',(req,resApp) =>
+{
+    //client.connect();
+    client.query("SELECT * from games;", (err,res) =>
+    {
+        if(err) throw err;
+        for(let row of res.rows)
+        {
+            console.log(JSON.stringify(row));
+        }
+        resApp.json(res.rows);
+    })
+})
+
 app.use(function errorHandler(error,req,res,next)
 {
     let response;
