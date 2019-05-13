@@ -48,7 +48,7 @@ app.get('/files',(req,resApp) =>
     })
 })
 
-/*app.push('/files',(req,resApp) =>
+app.post('/files',(req,resApp) =>
 {
     client.query(`INSERT INTO files values(${req.body.username},${req.body.date},0,0,0%,null)`,(err,res) =>
     {
@@ -61,7 +61,7 @@ app.get('/files',(req,resApp) =>
     });
 })
 
-*/
+
 
 app.get('/games',(req,resApp) =>
 {
