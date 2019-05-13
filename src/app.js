@@ -48,6 +48,19 @@ app.get('/files',(req,resApp) =>
     })
 })
 
+app.push('/files',(req,resApp) =>
+{
+    client.query(`INSERT INTO files values(${req.body.username},${req.body.date},0,0,0%,null)`,(err,res) =>
+    {
+        if(err) 
+            {
+                console.log(err.stack);
+                throw err;
+            }
+        
+    });
+})
+
 
 app.use(function errorHandler(error,req,res,next)
 {
