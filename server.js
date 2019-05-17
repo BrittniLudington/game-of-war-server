@@ -101,6 +101,17 @@ app.put('/files',(req,resApp) =>
 
 })
 
+app.get('/deck/:user',(req,resApp) =>
+{
+    let deckTable = req.params.user + "table";
+    client.query(`SELECT * FROM ${deckTable}`, (err,res) =>
+    {
+        if(err) throw err;
+        resApp.jsonp(res.rows);
+    });
+
+})
+
 
 
 app.get('/games',(req,resApp) =>
