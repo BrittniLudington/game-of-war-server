@@ -96,7 +96,6 @@ app.put('/files',(req,resApp) =>
         {
             throw err;
         }
-        console.log(res);
     })
 
 })
@@ -112,6 +111,15 @@ app.get('/deck/:user',(req,resApp) =>
 
 })
 
+app.get('/games/:user',(req,resApp) =>
+{
+    client.query(`SELECT * from games WHERE gameid = (SELECT gameid FROM files where username = '${req.params.user}')`, (err,res) =>
+    {
+        if(err) throw err;
+        resApp.jsonp(res.rows[0]);
+    })
+})
+
 
 
 app.get('/games',(req,resApp) =>
@@ -120,12 +128,14 @@ app.get('/games',(req,resApp) =>
     client.query("SELECT * from games;", (err,res) =>
     {
         if(err) throw err;
-        for(let row of res.rows)
-        {
-            console.log(JSON.stringify(row));
-        }
+
         resApp.json(res.rows);
     })
+})
+
+app.post('/games',(req,resApp) =>
+{
+    
 })
 
 app.use(function errorHandler(error,req,res,next)
@@ -146,6 +156,6 @@ app.use(function errorHandler(error,req,res,next)
 
 app.listen(PORT, () =>
 {
-    console.log("listening");
+    console.log("listening to port " + PORT);
 })
 
