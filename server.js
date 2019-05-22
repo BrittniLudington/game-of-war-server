@@ -47,15 +47,13 @@ app.get('/files',(req,resApp) =>
     })
 })
 
-app.delete('/user/:name',(req,resApp) =>
+app.get('/files/:user',(req,resApp) =>
 {
-    let deckTable = req.params.name + "table";
-    //console.log(req.params);
-    // first delete deck and game
-    client.query(`DELETE from games where gameid = (SELECT gameid from files where username = '${req.params.name}')`,(err) => {if(err) throw err;});
-    client.query(`DROP TABLE IF EXISTS ${deckTable}`,(err) => {if(err) throw err;});
-    client.query(`DELETE from files where username = '${req.params.name}'`,(err) => {if(err) throw err;});
-    
+    client.query(`SELECT * from files WHERE username = '${req.name}'`,(err,res) =>
+    {
+        if(err) throw err;
+        resApp.jsonp(res.rows);
+    })
 })
 
 app.post('/files',(req,resApp) =>
@@ -83,32 +81,27 @@ app.post('/files',(req,resApp) =>
    
 })
 
-app.put('/files',(req,resApp) =>
+app.put('/files/:user',(req,resApp) =>
 {
-    /* For any change in gameid 
-    Cases:
-        - new game id must be one higher than current highest
-        - If no games exists, have it be zero
-        */
-    client.query(`SELECT MAX(gameid) FROM files`,(err,res) =>
+    console.log(req.body,"HI");
+    if(!req.body.didWin)
     {
-        if(err)
-        {
-            throw err;
-        }
-    })
+        
+    }
+    //client.query(`UPDATE files SET `)
 
 })
 
-app.get('/deck/:user',(req,resApp) =>
-{
-    let deckTable = req.params.user + "table";
-    client.query(`SELECT * FROM ${deckTable}`, (err,res) =>
-    {
-        if(err) throw err;
-        resApp.jsonp(res.rows);
-    });
 
+app.delete('/user/:name',(req,resApp) =>
+{
+    let deckTable = req.params.name + "table";
+    //console.log(req.params);
+    // first delete deck and game
+    client.query(`DELETE from games where gameid = (SELECT gameid from files where username = '${req.params.name}')`,(err) => {if(err) throw err;});
+    client.query(`DROP TABLE IF EXISTS ${deckTable}`,(err) => {if(err) throw err;});
+    client.query(`DELETE from files where username = '${req.params.name}'`,(err) => {if(err) throw err;});
+    
 })
 
 app.get('/games/:user',(req,resApp) =>
@@ -133,10 +126,31 @@ app.get('/games',(req,resApp) =>
     })
 })
 
-app.post('/games',(req,resApp) =>
+app.put('/games/:user',(req,resApp) =>
 {
-    
+    console.log(req.body);
+    client.query(`UPDATE games SET "player-score" = ${req.body.pscore}, "npc-score"=${req.body.nscore},"round-num"=${req.body.round}
+    WHERE gameid = (SELECT gameid from files WHERE username = '${req.body.username}')`,(err,res) =>
+    {
+        if(err) throw err;
+
+        console.log("SAVE SUCCESSFUL");
+    })
 })
+
+
+app.get('/deck/:user',(req,resApp) =>
+{
+    let deckTable = req.params.user + "table";
+    client.query(`SELECT * FROM ${deckTable}`, (err,res) =>
+    {
+        if(err) throw err;
+        resApp.jsonp(res.rows);
+    });
+
+})
+
+
 
 app.use(function errorHandler(error,req,res,next)
 {
@@ -158,4 +172,3 @@ app.listen(PORT, () =>
 {
     console.log("listening to port " + PORT);
 })
-
