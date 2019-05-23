@@ -49,14 +49,14 @@ app.get('/files',(req,resApp) =>
 
 app.get('/files/:user',(req,resApp) =>
 {
-    client.query(`SELECT * from files WHERE username = '${req.name}'`,(err,res) =>
+    client.query(`SELECT * from files WHERE username = '${req.params.user}'`,(err,res) =>
     {
         if(err) throw err;
         resApp.jsonp(res.rows);
     })
 })
 
-app.post('/files',(req,resApp) =>
+app.post('/files/',(req,resApp) =>
 {
     client.query(`SELECT MAX(gameid) FROM files`, (err,resOne) =>
     {
@@ -83,11 +83,16 @@ app.post('/files',(req,resApp) =>
 
 app.put('/files/:user',(req,resApp) =>
 {
-    console.log(req.body,"HI");
-    if(!req.body.didWin)
-    {
-        
-    }
+    console.log(req.body.username,"HI");
+   // if(!req.body.didWin)
+   // {
+        client.query(`SELECT * from files where username = '${req.body.username}'`,(resOne, err) =>
+        {
+            //console.log(err);
+            console.log(resOne, "HELLO");
+            //client.query(`UPDATE files SET "total-games" = "total-games"+1, `)
+        })
+   // }
     //client.query(`UPDATE files SET `)
 
 })
@@ -128,13 +133,14 @@ app.get('/games',(req,resApp) =>
 
 app.put('/games/:user',(req,resApp) =>
 {
-    console.log(req.body);
-    client.query(`UPDATE games SET "player-score" = ${req.body.pscore}, "npc-score"=${req.body.nscore},"round-num"=${req.body.round}
+    //console.log(req.body);
+    let round = req.body.round + 1;
+    client.query(`UPDATE games SET "player-score" = ${req.body.pscore}, "npc-score"=${req.body.nscore},"round-num"=${round}
     WHERE gameid = (SELECT gameid from files WHERE username = '${req.body.username}')`,(err,res) =>
     {
         if(err) throw err;
-
         console.log("SAVE SUCCESSFUL");
+        console.log(res);
     })
 })
 
