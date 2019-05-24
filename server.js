@@ -58,39 +58,58 @@ app.get('/files/:user',(req,resApp) =>
 
 app.post('/files/',(req,resApp) =>
 {
+    console.log("IN POST", Date.now());
     client.query(`SELECT MAX(gameid) FROM files`, (err,resOne) =>
     {
         if(err) throw err;
         let id = resOne.rows[0].max + 1;
-        client.query(`INSERT INTO files values('${req.body.username}',NOW(),0,0,'0%',${id});`,(err,res) =>
+        client.query(`INSERT INTO files values('${req.body.username}',NOW(),0,0,'0%',${id}, NOW());`,(err,res) =>
         {
             if(err) 
                 {
                     console.log('HI',err.stack);
                     throw err;
                 }
+                console.log("INSERTED INTO FILES");
+            client.query(`INSERT INTO games values(${id},0,0,0)`,(errOne,resOne) =>
+            {
+                if(errOne) throw errOne;
+                console.log("INSERTED INTO GAMES");
+                let deckTable = req.body.username + "table";
+                client.query(`CREATE TABLE ${deckTable} AS TABLE deckoriginal;`,(errTwo,result) =>
+                {
+                    if(errTwo) throw errTwo;
+                    console.log("CREATED TABLE");
+                    resApp.jsonp("Success");
+                })
+            })
             
+
         })
-        client.query(`INSERT INTO games values(${id},0,0,0)`)
-        let deckTable = req.body.username + "table";
-        client.query(`CREATE TABLE ${deckTable} AS TABLE deckoriginal;`,(err,result) =>
-        {
-            if(err) throw err;
-        })
+
     })
    
 })
 
 app.put('/files/:user',(req,resApp) =>
 {
-    console.log(req.body.username,"HI");
    // if(!req.body.didWin)
    // {
-        client.query(`SELECT * from files where username = '${req.body.username}'`,(resOne, err) =>
+        client.query(`SELECT * from files;`,(err, resOne) =>
         {
-            //console.log(err);
-            console.log(resOne, "HELLO");
-            //client.query(`UPDATE files SET "total-games" = "total-games"+1, `)
+            if(err) throw err;
+            let totalGames = resOne.rows[0]['total-games'] + 1;
+            let totalWins = resOne.rows[0]['total-wins'];
+            if(req.body.didWin)
+                totalWins++;
+            let winlose = Math.floor(totalWins / totalGames * 100);
+            winlose = winlose.toString() + "%";
+            client.query(`UPDATE files SET "total-games" = ${totalGames}, "total-wins" = ${totalWins}, "win-lose" = '${winlose}' where username = '${req.body.username}'`, (errTwo,resTwo) =>
+            {
+                if(errTwo) throw errTwo;
+                resApp.jsonp("success");
+            })
+
         })
    // }
     //client.query(`UPDATE files SET `)
@@ -103,10 +122,22 @@ app.delete('/user/:name',(req,resApp) =>
     let deckTable = req.params.name + "table";
     //console.log(req.params);
     // first delete deck and game
-    client.query(`DELETE from games where gameid = (SELECT gameid from files where username = '${req.params.name}')`,(err) => {if(err) throw err;});
-    client.query(`DROP TABLE IF EXISTS ${deckTable}`,(err) => {if(err) throw err;});
-    client.query(`DELETE from files where username = '${req.params.name}'`,(err) => {if(err) throw err;});
+    client.query(`DELETE from games where gameid = (SELECT gameid from files where username = '${req.params.name}')`,(err) => 
+    {
+        if(err) throw err;
+        client.query(`DROP TABLE IF EXISTS ${deckTable}`,(errOne) => 
+        {
+            if(errOne) throw errOne;
+            client.query(`DELETE from files where username = '${req.params.name}'`,(errTwo) => 
+            {
+                if(errTwo) throw errTwo;
+                resApp.jsonp("deleted");
+            });
+
+        });
     
+    });
+     
 })
 
 app.get('/games/:user',(req,resApp) =>
@@ -139,8 +170,8 @@ app.put('/games/:user',(req,resApp) =>
     WHERE gameid = (SELECT gameid from files WHERE username = '${req.body.username}')`,(err,res) =>
     {
         if(err) throw err;
-        console.log("SAVE SUCCESSFUL");
-        console.log(res);
+        console.log(`SAVE SUCCESSFUL for ${req.body.username}: score ${req.body.pscore}, ${req.body.nscore}, round ${round}`);
+        resApp.jsonp("save successful");
     })
 })
 
