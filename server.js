@@ -58,7 +58,6 @@ app.get('/files/:user',(req,resApp) =>
 
 app.post('/files/',(req,resApp) =>
 {
-    console.log("IN POST", Date.now());
     client.query(`SELECT MAX(gameid) FROM files`, (err,resOne) =>
     {
         if(err) throw err;
@@ -67,21 +66,22 @@ app.post('/files/',(req,resApp) =>
         {
             if(err) 
                 {
-                    console.log('HI',err.stack);
+                    console.log('Oh dear',err.stack);
                     throw err;
                 }
-                console.log("INSERTED INTO FILES");
-            client.query(`INSERT INTO games values(${id},0,0,0)`,(errOne,resOne) =>
+                const newDeck = [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10];
+            client.query(`INSERT INTO games values(${id},0,0,0,'{0,0,0,0,0}','{0,0,0,0,0}','{${newDeck}}')`,(errOne,resOne) =>
             {
                 if(errOne) throw errOne;
-                console.log("INSERTED INTO GAMES");
-                let deckTable = req.body.username + "table";
+                resApp.jsonp("Success");
+              /*  let deckTable = req.body.username + "table";
                 client.query(`CREATE TABLE ${deckTable} AS TABLE deckoriginal;`,(errTwo,result) =>
                 {
                     if(errTwo) throw errTwo;
                     console.log("CREATED TABLE");
                     resApp.jsonp("Success");
                 })
+                */
             })
             
 
@@ -125,15 +125,10 @@ app.delete('/user/:name',(req,resApp) =>
     client.query(`DELETE from games where gameid = (SELECT gameid from files where username = '${req.params.name}')`,(err) => 
     {
         if(err) throw err;
-        client.query(`DROP TABLE IF EXISTS ${deckTable}`,(errOne) => 
+        client.query(`DELETE from files where username = '${req.params.name}'`,(errTwo) => 
         {
-            if(errOne) throw errOne;
-            client.query(`DELETE from files where username = '${req.params.name}'`,(errTwo) => 
-            {
-                if(errTwo) throw errTwo;
-                resApp.jsonp("deleted");
-            });
-
+            if(errTwo) throw errTwo;
+            resApp.jsonp("deleted");
         });
     
     });
@@ -164,28 +159,19 @@ app.get('/games',(req,resApp) =>
 
 app.put('/games/:user',(req,resApp) =>
 {
-    //console.log(req.body);
     let round = req.body.round + 1;
-    client.query(`UPDATE games SET "player-score" = ${req.body.pscore}, "npc-score"=${req.body.nscore},"round-num"=${round}
+    let playerHand = req.body.playerHand.toString();
+    let npcHand = req.body.npcHand.toString();
+    let deck = req.body.deck.toString();
+    client.query(`UPDATE games SET "player-score" = ${req.body.pscore}, "npc-score"=${req.body.nscore},"round-num"=${round}, "player-hand"='{${playerHand}}',"npc-hand"='{${npcHand}}', deck='{${deck}}'
     WHERE gameid = (SELECT gameid from files WHERE username = '${req.body.username}')`,(err,res) =>
     {
         if(err) throw err;
-        console.log(`SAVE SUCCESSFUL for ${req.body.username}: score ${req.body.pscore}, ${req.body.nscore}, round ${round}`);
         resApp.jsonp("save successful");
     })
 })
 
 
-app.get('/deck/:user',(req,resApp) =>
-{
-    let deckTable = req.params.user + "table";
-    client.query(`SELECT * FROM ${deckTable}`, (err,res) =>
-    {
-        if(err) throw err;
-        resApp.jsonp(res.rows);
-    });
-
-})
 
 
 
