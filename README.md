@@ -1,27 +1,36 @@
- 
-# Express Boilerplate!
+GAME OF WAR SERVER
 
-This is a boilerplate project used for starting new projects!
 
-## Set up
+Purpose: This Node JS server acts as the controller for the game of war app and it's respective database on Heroku.com. All fetch requests go through here.
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+Security: As the app does not hold any valuable information and is designed for single player use in mind, there is no security for who can access what files. If the
 
-## Scripts
+game is updated for multiple people, then security will be added in the future.
 
-Start the application `npm start`
 
-Start nodemon for the application `npm run dev`
+Endpoints:
 
-Run the tests `npm test`
 
-## Deploying
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+	FILES: Endpoints in regards to overall player stats
+
+	GET "/files"
+
+		Returns all player files
+
+		required parameters: none
+
+	GET "/files/:user"
+
+		Returns file of specified user
+
+		required parameters: player username in subsitute for ":user" in url
+
+	POST "/files/"
+
+		Creates a new player file and respective game file for player
+
+		required parameters: username of new player (as "username" in body)
+
+	

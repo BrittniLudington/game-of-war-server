@@ -95,7 +95,7 @@ app.put('/files/:user',(req,resApp) =>
 {
    // if(!req.body.didWin)
    // {
-        client.query(`SELECT * from files;`,(err, resOne) =>
+        client.query(`SELECT * from files where username ='${req.body.username}';`,(err, resOne) =>
         {
             if(err) throw err;
             let totalGames = resOne.rows[0]['total-games'] + 1;
