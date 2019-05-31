@@ -17,7 +17,7 @@ game is updated for multiple people, then security will be added in the future.
 
 
 
-	### FILES: Endpoints in regards to overall player stats
+### FILES: Endpoints in regards to overall player stats
 
 	GET "/files"
 
@@ -58,7 +58,7 @@ game is updated for multiple people, then security will be added in the future.
 
 
 
-	### GAMES: Endpoints in regards to current games saved in the database
+### GAMES: Endpoints in regards to current games saved in the database
 
 
 	GET "/games/:user"
