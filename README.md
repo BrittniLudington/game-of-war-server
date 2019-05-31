@@ -1,19 +1,23 @@
-GAME OF WAR SERVER
+# GAME OF WAR SERVER
 
 
-Purpose: This Node JS server acts as the controller for the game of war app and it's respective database on Heroku.com. All fetch requests go through here.
+## Purpose: 
+
+This Node JS server acts as the controller for the game of war app and it's respective database on Heroku.com. All fetch requests go through here.
 
 
-Security: As the app does not hold any valuable information and is designed for single player use in mind, there is no security for who can access what files. If the
+## Security: 
+
+As the app does not hold any valuable information and is designed for single player use in mind, there is no security for who can access what files. If the
 
 game is updated for multiple people, then security will be added in the future.
 
 
-Endpoints:
+## Endpoints:
 
 
 
-	FILES: Endpoints in regards to overall player stats
+	### FILES: Endpoints in regards to overall player stats
 
 	GET "/files"
 
@@ -54,7 +58,7 @@ Endpoints:
 
 
 
-	GAMES: Endpoints in regards to current games saved in the database
+	### GAMES: Endpoints in regards to current games saved in the database
 
 
 	GET "/games/:user"
