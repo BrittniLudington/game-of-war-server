@@ -7,9 +7,11 @@ const helmet = require('helmet');
 const {NODE_ENV,DATABASE_URL, PORT} = require('../config');
 const {Client} = require('pg');
 const parser = require('body-parser');
+const sqlinjection = require('sql-injection');
 
 
 const app = express();
+app.use(sqlinjection);
 app.use(cors());
 
 const morganOption = (NODE_ENV === 'production') ? 'tiny' : 'common';
@@ -49,10 +51,7 @@ app.get('/files',(req,resApp) =>
 
 app.get('/files/:user',(req,resApp) =>
 {
-    client.query(`SELECT * from files WHERE username = ?`,
-    [
-        req.params.user
-    ],(err,res) =>
+    client.query(`SELECT * from files WHERE username = '${req.params.user}'`,(err,res) =>
     {
         if(err) throw err;
         resApp.jsonp(res.rows);
@@ -198,5 +197,4 @@ app.use(function errorHandler(error,req,res,next)
 app.listen(PORT, () =>
 {
     console.log("listening to port " + PORT);
-    console.log(cors);
 })
