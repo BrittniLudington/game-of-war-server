@@ -49,7 +49,10 @@ app.get('/files',(req,resApp) =>
 
 app.get('/files/:user',(req,resApp) =>
 {
-    client.query(`SELECT * from files WHERE username = '${req.params.user}'`,(err,res) =>
+    client.query(`SELECT * from files WHERE username = ?`,
+    [
+        req.params.user
+    ],(err,res) =>
     {
         if(err) throw err;
         resApp.jsonp(res.rows);
