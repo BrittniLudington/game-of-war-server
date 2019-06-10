@@ -159,7 +159,7 @@ app.get('/games',(req,resApp) =>
     })
 })
 
-app.put('/games/:user',(req,resApp) =>
+app.put('/games/:user',cors(),(req,resApp) =>
 {
 
     let round = req.body.round + 1;
