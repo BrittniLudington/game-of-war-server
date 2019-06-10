@@ -33,6 +33,25 @@ client.connect((err) =>
     }
 });
 
+app.use(function errorHandler(error,req,res,next)
+{
+    let response;
+    if(NODE_ENV === 'production')
+    {
+        response = {error: {message: 'server error'}}
+    }
+    else
+    {
+        console.error(error);
+        response = {message: error.message, error};
+    }
+    res.setHeader('Access-Control-Allow-Origin','*');
+    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
+    next();
+   // res.status(500).json(response);
+})
+
+
 app.get('/', (req,res) =>
 {
     res.send('files for users, games for games');
@@ -175,26 +194,6 @@ app.put('/games/:user',(req,resApp) =>
 })
 
 
-
-
-
-app.use(function errorHandler(error,req,res,next)
-{
-    let response;
-    if(NODE_ENV === 'production')
-    {
-        response = {error: {message: 'server error'}}
-    }
-    else
-    {
-        console.error(error);
-        response = {message: error.message, error};
-    }
-    res.setHeader('Access-Control-Allow-Origin','*');
-    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
-    next();
-   // res.status(500).json(response);
-})
 
 
 app.listen(PORT, () =>
