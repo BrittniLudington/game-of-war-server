@@ -81,7 +81,7 @@ app.get('/files/:user',(req,resApp) =>
     })
 })
 
-app.post('/files',(req,resApp) =>
+app.post('/files/',(req,resApp) =>
 {
     client.query(`SELECT MAX(gameid) FROM files`, (err,resOne) =>
     {
