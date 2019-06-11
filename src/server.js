@@ -61,7 +61,7 @@ app.get('/', (req,res) =>
     res.send('files for users, games for games');
 })
 
-app.get('/files',(req,resApp) =>
+app.get('/files/',(req,resApp) =>
 {
     //client.connect();
     client.query("SELECT * from files;", (err,res) =>
