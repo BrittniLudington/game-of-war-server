@@ -48,9 +48,7 @@ game is updated for multiple people, then security will be added in the future.
 
 	
 
-	DELETE "/user/:name"
-
-	NOTE: this endpoint accesses same information as other file endpoints, the different name is a typo
+	DELETE "/files/:name"
 
 		Deletes specified user and game
 		
