@@ -1,5 +1,6 @@
 # GAME OF WAR SERVER
 
+[Link to server](https://game-of-war-server.herokuapp.com/)
 
 ## Purpose: 
 
