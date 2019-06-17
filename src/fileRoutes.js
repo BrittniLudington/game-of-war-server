@@ -23,7 +23,9 @@ routerFiles.get('/files',(req,resApp) =>
 // returns file entry specified by username in url
 routerFiles.get('/files/:user',(req,resApp) =>
 {
-    client.query(`SELECT * from files WHERE username = '${req.params.user}'`,(err,res) =>
+    let unfilteredName = req.params.user;
+    let filteredName = unfilteredName.replace(/[^a-zA-Z0-9_\-]/g, "");
+    client.query(`SELECT * from files WHERE username = '${filteredName}'`,(err,res) =>
     {
         if(err) throw err;
         resApp.jsonp(res.rows);
@@ -38,7 +40,11 @@ routerFiles.post('/files',(req,resApp) =>
         console.log(err, resOne);
         if(err) throw err;
         let id = resOne.rows[0].max + 1;
-        client.query(`INSERT INTO files values('${req.body.username}',NOW(),0,0,'0%',${id}, NOW());`,(err,res) =>
+        let unfilteredName = req.body.username;
+        console.log("original:" + unfilteredName);
+        let filteredName = unfilteredName.replace(/[^a-zA-Z0-9_\-]/g, "");
+        console.log(filteredName);
+        client.query(`INSERT INTO files values('${filteredName}',NOW(),0,0,'0%',${id}, NOW());`,(err,res) =>
         {
             if(err) 
                 {
@@ -62,8 +68,10 @@ routerFiles.post('/files',(req,resApp) =>
 // updates stats in a file entry by username
 routerFiles.put('/files/:user',(req,resApp) =>
 {
+    let unfilteredName = req.body.username;
+    let filteredName = unfilteredName.replace(/[^a-zA-Z0-9_\-]/g, "");
 
-        client.query(`SELECT * from files where username ='${req.body.username}';`,(err, resOne) =>
+        client.query(`SELECT * from files where username ='${filteredName}';`,(err, resOne) =>
         {
             if(err) throw err;
             let totalGames = resOne.rows[0]['total-games'] + 1;
@@ -84,9 +92,10 @@ routerFiles.put('/files/:user',(req,resApp) =>
 // deletes a file entry and its respective game entry
 routerFiles.delete('/files/:name',(req,resApp) =>
 {
-    let deckTable = req.params.name + "table";
+    let unfilteredName = req.params.name;
+    let filteredName = unfilteredName.replace(/[^a-zA-Z0-9_\-]/g, "");
     //  delete deck and game
-    client.query(`DELETE from games where gameid = (SELECT gameid from files where username = '${req.params.name}')`,(err) => 
+    client.query(`DELETE from games where gameid = (SELECT gameid from files where username = '${filteredName}')`,(err) => 
     {
         if(err) throw err;
         client.query(`DELETE from files where username = '${req.params.name}'`,(errTwo) => 

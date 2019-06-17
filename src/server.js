@@ -13,7 +13,6 @@ let gameRoutes = require('./gameRoutes');
 
 
 const app = express();
-//app.use(sqlinjection);
 app.use(cors());
 
 const morganOption = (NODE_ENV === 'production') ? 'tiny' : 'common';
