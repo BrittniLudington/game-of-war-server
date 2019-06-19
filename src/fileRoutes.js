@@ -52,7 +52,7 @@ routerFiles.post('/files',(req,resApp) =>
                     throw err;
                 }
                 const newDeck = [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10];
-            client.query(`INSERT INTO games values(${id},0,0,0,'{0,0,0,0,0}','{0,0,0,0,0}','{${newDeck}}')`,(errOne,resOne) =>
+            client.query(`INSERT INTO games values(${id},0,0,1,'{0,0,0,0,0}','{0,0,0,0,0}','{${newDeck}}')`,(errOne,resOne) =>
             {
                 if(errOne) throw errOne;
                 resApp.jsonp("Success");
