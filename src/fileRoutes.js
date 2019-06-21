@@ -28,7 +28,7 @@ routerFiles.get('/files/:user',(req,resApp) =>
     client.query(`SELECT * from files WHERE username = '${filteredName}'`,(err,res) =>
     {
         if(err) throw err;
-        resApp.jsonp(res.rows);
+        resApp.status(200).jsonp(res.rows);
     })
 })
 
@@ -37,13 +37,10 @@ routerFiles.post('/files',(req,resApp) =>
 {
     client.query(`SELECT MAX(gameid) FROM files`, (err,resOne) =>
     {
-        console.log(err, resOne);
         if(err) throw err;
         let id = resOne.rows[0].max + 1;
         let unfilteredName = req.body.username;
-        console.log("original:" + unfilteredName);
         let filteredName = unfilteredName.replace(/[^a-zA-Z0-9_\-]/g, "");
-        console.log(filteredName);
         client.query(`INSERT INTO files values('${filteredName}',NOW(),0,0,'0%',${id}, NOW());`,(err,res) =>
         {
             if(err) 
@@ -55,7 +52,7 @@ routerFiles.post('/files',(req,resApp) =>
             client.query(`INSERT INTO games values(${id},0,0,1,'{0,0,0,0,0}','{0,0,0,0,0}','{${newDeck}}')`,(errOne,resOne) =>
             {
                 if(errOne) throw errOne;
-                resApp.jsonp("Success");
+                resApp.status(200).jsonp("Success");
 
             })
             
@@ -83,7 +80,7 @@ routerFiles.put('/files/:user',(req,resApp) =>
             client.query(`UPDATE files SET "total-games" = ${totalGames}, "total-wins" = ${totalWins}, "win-lose" = '${winlose}' where username = '${req.body.username}'`, (errTwo,resTwo) =>
             {
                 if(errTwo) throw errTwo;
-                resApp.jsonp("success");
+                resApp.status(200).jsonp("success");
             })
 
         })
@@ -101,7 +98,7 @@ routerFiles.delete('/files/:name',(req,resApp) =>
         client.query(`DELETE from files where username = '${req.params.name}'`,(errTwo) => 
         {
             if(errTwo) throw errTwo;
-            resApp.jsonp("deleted");
+            resApp.status(200).jsonp("deleted");
         });
     
     });

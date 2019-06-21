@@ -12,7 +12,7 @@ gameRoutes.get('/games/:user',(req,resApp) =>
     client.query(`SELECT * from games WHERE gameid = (SELECT gameid FROM files where username = '${filteredName}')`, (err,res) =>
     {
         if(err) throw err;
-        resApp.jsonp(res.rows[0]);
+        resApp.status(200).jsonp(res.rows[0]);
     })
 })
 
@@ -25,7 +25,7 @@ gameRoutes.get('/games',(req,resApp) =>
     {
         if(err) throw err;
 
-        resApp.json(res.rows);
+        resApp.status(200).json(res.rows);
     })
 })
 
@@ -42,7 +42,7 @@ gameRoutes.put('/games/:user',(req,resApp) =>
     WHERE gameid = (SELECT gameid from files WHERE username = '${filteredName}')`,(err,res) =>
     {
         if(err) throw err;
-        resApp.jsonp("save successful");
+        resApp.status(200).jsonp("save successful");
     })
 })
 
