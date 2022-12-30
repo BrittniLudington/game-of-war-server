@@ -28,7 +28,7 @@
     "babel-core": "^6.26.3",
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "nodemon": "^1.19.1",
     "supertest": "^4.0.2"
   }
